@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemGroup>
+		<TestFiles Include="test-data\**\*" />
+	</ItemGroup>
+
+	<Target Name="CopyTestFiles" AfterTargets="CoreCompile" >
+	<Copy
+		SourceFiles="@(TestFiles)"
+		DestinationFolder="$(TestDir)\%(RecursiveDir)"
+		Retries="0"
+		OverwriteReadOnlyFiles="true"
+		SkipUnchangedFiles="true"
+		UseHardlinksIfPossible="true"
+	/>
+  </Target>
+
+</Project>

@@ -9,11 +9,22 @@ namespace hfdial
 {
     class Program
     {
-        static void Main(string[] args)
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        static int Main(string[] args)
         {
             log4net.Config.BasicConfigurator.Configure();
-            var d = new SimpleDialer();
-            d.Dial(args[0], args[1]).Wait();
+            try
+            {
+                var d = new SimpleDialer();
+                d.Dial(args[0], args[1]).Wait();
+                return 0;
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                return -1;
+            }
         }
     }
 }

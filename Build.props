@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright (c) 2016, Andreas Grimme -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<CompanyName>Andreas Grimme</CompanyName>
+        <ProductName>Sidi.HandsFree</ProductName>
+		<UpgradeCode>57CAC978-D1D8-4375-A93F-E906E4E66D60</UpgradeCode>
+		<Configuration>Release</Configuration>
+		<Platform>AnyCPU</Platform>
+		<NugetLocalFeed>$(USERPROFILE)\Dropbox\nuget</NugetLocalFeed>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageProjects Include="Sidi.HandsFree" />
+	</ItemGroup>
+</Project>
