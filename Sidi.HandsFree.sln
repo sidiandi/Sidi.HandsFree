@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hfdial", "hfdial\hfdial.csproj", "{0182594B-FAD3-49C3-8812-D12F01CF5C51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sidi.HandsFree", "Sidi.HandsFree\Sidi.HandsFree.csproj", "{35505E3D-D4FD-467B-8AC8-4F27CC65882A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0182594B-FAD3-49C3-8812-D12F01CF5C51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0182594B-FAD3-49C3-8812-D12F01CF5C51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0182594B-FAD3-49C3-8812-D12F01CF5C51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0182594B-FAD3-49C3-8812-D12F01CF5C51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35505E3D-D4FD-467B-8AC8-4F27CC65882A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35505E3D-D4FD-467B-8AC8-4F27CC65882A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35505E3D-D4FD-467B-8AC8-4F27CC65882A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35505E3D-D4FD-467B-8AC8-4F27CC65882A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
