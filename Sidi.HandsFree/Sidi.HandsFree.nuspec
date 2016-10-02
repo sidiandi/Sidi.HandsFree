@@ -1,7 +1,14 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
     <projectUrl>https://github.com/sidiandi/Sidi.HandsFree</projectUrl>
     <description>.NET library to implement the bluetooth Hands-free Protocol (HFP)</description>
+    <copyright>Copyright 2016</copyright>
+    <tags>Bluetooth</tags>
   </metadata>
 </package>
