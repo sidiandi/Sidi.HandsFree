@@ -22,7 +22,6 @@ namespace Sidi.HandsFree
         {
             var slc = await ServiceLevelConnection.Connect(deviceName);
             await slc.Establish();
-            Console.WriteLine(await slc.GetManufacturerIdentification());
             await slc.Dial(number);
         }
     }

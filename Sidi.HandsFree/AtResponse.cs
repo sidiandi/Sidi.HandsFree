@@ -6,15 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sidi.HandsFree
+namespace Sidi
 {
-    public class AtCommandException : Exception
+    public class AtResponse
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public AtCommandException(string message = null)
-            :base(message)
+        public AtResponse()
         {
         }
+
+        public string Command;
+        public string Value;
     }
 }

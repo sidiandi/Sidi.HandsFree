@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sidi.HandsFree
@@ -12,7 +14,7 @@ namespace Sidi.HandsFree
     /// <summary>
     /// AT command connection according to AT command set for User Equipment (UE) (3GPP TS 27.007 version 6.8.0 Release 6)
     /// </summary>
-    class AtCommandConnection
+    public class AtCommandConnection
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -21,25 +23,89 @@ namespace Sidi.HandsFree
         public AtCommandConnection(Stream stream)
         {
             this.stream = stream;
+            Task.Factory.StartNew(ReceiveResponses, TaskCreationOptions.LongRunning);
+        }
+
+        async Task ReceiveResponses()
+        {
+            for (;;)
+            {
+                var r = await ReadResponse();
+                if (r == null)
+                {
+                    break;
+                }
+                OnResponse(r);
+            }
+        }
+
+        void OnResponse(string response)
+        {
+            if (Response != null)
+            {
+                Response(this, response);
+            }
+        }
+        List<string> responses = null;
+
+        public event EventHandler<string> Response;
+        object sendCommand = new object();
+
+        class CommandResponseCollector
+        {
+            public CommandResponseCollector(AtCommandConnection at)
+            {
+                this.at = at;
+            }
+
+            readonly AtCommandConnection at;
+
+            List<string> responses = new List<string>();
+            string status;
+
+            public IList<string> Responses { get { return responses; } } 
+            public string Status { get { return status; } }
+
+            public void Collect()
+            {
+                at.Response += At_Response;
+                lock (this)
+                {
+                    for (; status == null;)
+                    {
+                        Monitor.Wait(this);
+                    }
+                }
+                at.Response -= At_Response;
+            }
+
+            private void At_Response(object sender, string e)
+            {
+                lock (this)
+                {
+                    if (IsOk(e) || IsError(e))
+                    {
+                        status = e;
+                        Monitor.PulseAll(this);
+                    }
+                    else
+                    {
+                        responses.Add(e);
+                    }
+                }
+            }
         }
 
         public async Task<string[]> Command(string commandLine)
         {
             await Write(commandPrefix + commandLine + commandPostfix);
-            var responses = new List<string>();
-            for (;;)
+            var cr = new CommandResponseCollector(this);
+            cr.Collect();
+            if (IsError(cr.Status))
             {
-                var r = await ReadResponse();
-                if (IsOk(r))
-                {
-                    return responses.ToArray();
-                }
-                if (IsError(r))
-                {
-                    throw new AtCommandException(r);
-                }
-                responses.Add(r);
+                throw new AtCommandException(cr.Status);
             }
+            return cr.Responses.ToArray();
         }
 
         static bool IsOk(string response)
@@ -60,6 +126,11 @@ namespace Sidi.HandsFree
             log.DebugFormat("Write: {0}", text);
         }
 
+        internal void Close()
+        {
+            stream.Close();
+        }
+
         const string commandPrefix = "AT";
         const string commandPostfix = "\r";
         const string responsePrefix = "\r\n";
@@ -67,7 +138,12 @@ namespace Sidi.HandsFree
 
         async Task<string> ReadResponse()
         {
-            await ReadUntilAsync(responsePrefix);
+            var prefix = await ReadUntilAsync(responsePrefix);
+            if (prefix == null)
+            {
+                return null;
+            }
+
             return await ReadUntilAsync(responsePostfix);
         }
 
@@ -81,7 +157,7 @@ namespace Sidi.HandsFree
                     var c = stream.ReadByte();
                     if (c < 0)
                     {
-                        throw new AtCommandException();
+                        return null;
                     }
                     w.Write((char)c);
                     if (terminationString[terminationStringIndex] == (char)c)
@@ -107,7 +183,7 @@ namespace Sidi.HandsFree
 
         public async Task<string> Get(string command)
         {
-            var p = command + ": ";
+            var p = Regex.Replace(command, "[?=]+$", String.Empty) + ": ";
             foreach (var r in await Command(command))
             {
                 if (r.StartsWith(p))
@@ -115,7 +191,7 @@ namespace Sidi.HandsFree
                     return r.Substring(p.Length);
                 }
             }
-            throw new AtCommandException();
+            return null;
         }
     }
 }
